@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Challenge Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #222;
+            color: #fff;
+            overflow: hidden;
+        }
+        #gameArea {
+            position: relative;
+            width: 100%;
+            height: 90vh;
+            border: 2px solid #fff;
+            margin-top: 20px;
+            background-color: #111;
+        }
+        .word {
+            position: absolute;
+            font-size: 24px;
+            color: #0f0;
+        }
+        #inputBox {
+            margin-top: 20px;
+            font-size: 24px;
+            padding: 10px;
+            width: 300px;
+        }
+        #score {
+            font-size: 28px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Typing Challenge Game</h1>
+<div id="gameArea"></div>
+<input type="text" id="inputBox" placeholder="Type here" autofocus>
+<div id="score">Score: 0</div>
+
+<script>
+const wordsList = ["gautam","priyanshu","suraj","aditya","piyush","rajesh","sumit","amit","ritik","ritesh","abheshik","raushan","subham","payal","supriya","payal","kajal","rose","sun","tree"];
+let score = 0;
+const gameArea = document.getElementById("gameArea");
+const inputBox = document.getElementById("inputBox");
+const scoreDisplay = document.getElementById("score");
+
+let activeWords = [];
+
+// Function to create a word element
+function createWord() {
+    const wordText = wordsList[Math.floor(Math.random() * wordsList.length)];
+    const wordElem = document.createElement("div");
+    wordElem.classList.add("word");
+    wordElem.textContent = wordText;
+    wordElem.style.top = Math.random() * (gameArea.clientHeight - 30) + "px";
+    wordElem.style.left = Math.random() * (gameArea.clientWidth - 100) + "px";
+    gameArea.appendChild(wordElem);
+    activeWords.push(wordElem);
+
+    // Word falls down
+    let fallInterval = setInterval(() => {
+        const top = parseFloat(wordElem.style.top);
+        if(top < gameArea.clientHeight - 30){
+            wordElem.style.top = top + 1 + "px";
+        } else {
+            // Word missed
+            alert("Game Over! Your Score: " + score);
+            location.reload();
+            clearInterval(fallInterval);
+        }
+    }, 20);
+}
+
+// Create new word every 2 seconds
+setInterval(createWord, 2000);
+
+// Input event
+inputBox.addEventListener("input", () => {
+    for(let i = 0; i < activeWords.length; i++){
+        if(inputBox.value.trim() === activeWords[i].textContent){
+            // Correct typing
+            gameArea.removeChild(activeWords[i]);
+            activeWords.splice(i,1);
+            score++;
+            scoreDisplay.textContent = "Score: " + score;
+            inputBox.value = "";
+            break;
+        }
+    }
+});
+</script>
+
+</body>
+</html>
+
